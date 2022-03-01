@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+service Broadcast {
+    rpc GreetServer (GreetRequest) returns (GreetMessage) {}
+    rpc AddRoom (RoomRequest) returns (GreetMessage) {}
+    rpc GetRoomInfo (RoomRequest) returns (RoomInfo) {}
+    rpc GetRooms (Null) returns (RoomList) {}
+    rpc SendMessage (stream SendRequest) returns (SendResult) {}
+    rpc GetMessages (MessagesRequest) returns (stream Message) {}
+}
+
+message Null {}
+
+message GreetRequest {
+    string name = 1;
+}
+
+message GreetMessage {
+    string msg = 1;
+}
+
+message RoomRequest {
+    string id = 1;
+}
+
+message RoomInfo {
+    string id = 1;
+}
+
+message RoomList {
+    repeated RoomInfo rooms = 1;
+}
+
+message SendRequest {
+    string id = 1;
+    string name = 2;
+    string content = 3;
+}
+
+message SendResult {
+    bool result = 1;
+}
+
+message MessagesRequest {
+    string id = 1;
+}
+
+message Message {
+    string id = 1;
+    string name = 2;
+    string content = 3;
+}
