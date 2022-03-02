@@ -65,3 +65,28 @@ func (s *server) SendMessage(stream pb.Broadcast_SendMessageServer) error {
 		)
 	}
 }
+
+func (s *server) GetMessages(p *pb.MessagesRequest, stream pb.Broadcast_GetMessagesServer) error {
+	index, err := searchRooms(s.rooms, p.Id)
+	if err != nil {
+		return err
+	}
+
+	targetRoom := s.rooms[index]
+
+	previousCount := len(targetRoom.contents)
+	currentCount := 0
+
+	for {
+		targetRoom = s.rooms[index]
+		currentCount = len(targetRoom.contents)
+
+		if previousCount < currentCount {
+			msg, _ := latestMessage(targetRoom.contents)
+			if err := stream.Send(&pb.Message{Id: targetRoom.id, Name: msg.author, Content: msg.content}); err != nil {
+				return err
+			}
+		}
+		previousCount = currentCount
+	}
+}
