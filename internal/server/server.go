@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"io"
 	"log"
@@ -20,6 +21,21 @@ type room struct {
 type message struct {
 	user    string
 	content string
+}
+
+func (s *server) AddRoom(ctx context.Context, request *pb.RoomRequest) (*pb.RoomInfo, error) {
+	s.rooms = append(s.rooms, room{id: request.Id, contents: []message{}})
+
+	index, err := searchRooms(s.rooms, request.Id)
+	if err != nil {
+		return nil, err
+	}
+	room := s.rooms[index]
+	return &pb.RoomInfo{
+		Id:           room.id,
+		MessageCount: int32(len(room.contents)),
+	}, nil
+
 }
 
 func searchRooms(r []room, id string) (int, error) {
