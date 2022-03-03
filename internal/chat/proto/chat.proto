@@ -29,6 +29,7 @@ message RoomRequest {
 
 message RoomInfo {
     string id = 1;
+    int32 messageCount = 2;
 }
 
 message RoomList {
