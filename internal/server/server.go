@@ -35,7 +35,18 @@ func (s *server) AddRoom(ctx context.Context, request *pb.RoomRequest) (*pb.Room
 		Id:           room.id,
 		MessageCount: int32(len(room.contents)),
 	}, nil
+}
 
+func (s *server) GetRoomInfo(ctx context.Context, request *pb.RoomRequest) (*pb.RoomInfo, error) {
+	index, err := searchRooms(s.rooms, request.Id)
+	if err != nil {
+		return nil, err
+	}
+	room := s.rooms[index]
+	return &pb.RoomInfo{
+		Id:           room.id,
+		MessageCount: int32(len(room.contents)),
+	}, nil
 }
 
 func searchRooms(r []room, id string) (int, error) {
