@@ -49,6 +49,11 @@ func (s *server) GetRoomInfo(ctx context.Context, request *pb.RoomRequest) (*pb.
 	}, nil
 }
 
+func (s *server) GetRoom(ctx context.Context, p *pb.Null) (*pb.RoomList, error) {
+	return &pb.RoomList{
+		Rooms: buildRoomInfo(s.rooms)}, nil
+}
+
 func searchRooms(r []room, id string) (int, error) {
 	for i, v := range r {
 		if v.id == id {
